@@ -16,7 +16,7 @@
 
 将 PR 加入总看板，并更新 Issue 与 Linear 的明确链接。跨仓库工作建立协调 Issue 和双方实施 Issue，实际阻塞关系写明解除所需证据；不能仅凭相似标题关联。
 
-仓库的 `Portfolio traceability / traceability` 检查验证分支中的 GitHub/Linear 编号、同仓库的开放 Issue、实际 head SHA 及 PR 说明。它只读取事件和 GitHub Issue API，使用只读 GITHUB_TOKEN，无 checkout、部署或业务操作。旧 PR 后续触发检查时也需补齐流程；在迁移前保留旧分支和已有证据，通过独立任务决定迁移方式。
+仓库的 `Portfolio traceability / traceability` 检查验证分支中的 GitHub/Linear 编号、同仓库的开放 Issue、实际 head SHA 及 PR 说明。它只读取事件和当前 GitHub PR/Issue API，使用只读 GITHUB_TOKEN，无 checkout、部署或业务操作。读取当前 PR 正文避免提交和正文先后更新引发旧事件误报；并发取消过期作业，已被新 head 替代的事件不验证当前交付。旧 PR 后续触发检查时也需补齐流程；在迁移前保留旧分支和已有证据，通过独立任务决定迁移方式。
 
 该检查验证 Linear/总看板链接格式与正文信息；它没有跨产品凭据，**不能证明 Linear 任务存在、关联正确、总看板成员关系或验收证据真实**。这些内容由执行者回读核验并由审查人确认；GitHub App 未获权限时记录缺口。不能用一条绿色元数据检查代替原有产品 CI。
 
