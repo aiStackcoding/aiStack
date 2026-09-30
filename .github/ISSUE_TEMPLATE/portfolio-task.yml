@@ -1,0 +1,52 @@
+name: 需求 / 任务
+description: 建立目标、范围、验收、依赖与下一步
+title: "[任务] "
+body:
+  - type: markdown
+    attributes:
+      value: "创建前请查重。任务创建后关联总看板和 Linear；原生同步仓库先查自动同步任务。"
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目标与范围
+      description: 说明预期行为、受影响范围和边界
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收条件
+      description: 写可核验的清单，区分代码、部署与真实用户验收
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 依赖与关联
+      description: 写仓库/Issue源链接及真实阻塞；没有依赖请写无
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: 预期验证方式
+      description: 写本地检查、指定CI/数据库环境和适用的真实用户验收
+    validations:
+      required: true
+  - type: textarea
+    id: next
+    attributes:
+      label: 下一步
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 建议优先级
+      options:
+        - P2
+        - P0
+        - P1
+        - P3
+    validations:
+      required: true

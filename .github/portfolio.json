@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "repository": "aiStackcoding/aiStack",
+  "product": "aiStack",
+  "githubProject": "https://github.com/users/fxxkrlab/projects/6",
+  "linear": {
+    "workspace": "fxxkrlab",
+    "team": "FXX",
+    "projectId": "6d5efdfa-05b0-4e96-b250-58a780ef7b64",
+    "projectUrl": "https://linear.app/fxxkrlab/project/跨项目研发总览-cf51cdb72517",
+    "issueAssociation": "manual-source-link"
+  },
+  "bootstrapIssue": "https://github.com/aiStackcoding/aiStack/issues/2",
+  "bootstrapLinearIssue": "https://linear.app/fxxkrlab/issue/FXX-27/流程初始化-aistack接入-issue总看板linear独立分支与-draft-pr",
+  "defaultPullRequest": "draft",
+  "completionRequires": "all-issue-acceptance-criteria",
+  "branchProtection": "verify-plan-and-required-checks-before-enabling"
+}

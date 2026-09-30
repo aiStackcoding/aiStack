@@ -1,0 +1,52 @@
+name: 缺陷
+description: 记录复现、预期、回归验收与关联
+title: "[缺陷] "
+body:
+  - type: markdown
+    attributes:
+      value: "创建前请查重。任务创建后关联总看板和 Linear；原生同步仓库先查自动同步任务。"
+  - type: textarea
+    id: goal
+    attributes:
+      label: 复现步骤、实际结果与预期行为
+      description: 写版本/平台/环境、复现步骤、预期和实际结果；请勿包含凭据或个人敏感数据
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收条件
+      description: 写可核验的清单，区分代码、部署与真实用户验收
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 依赖与关联
+      description: 写仓库/Issue源链接及真实阻塞；没有依赖请写无
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: 预期验证方式
+      description: 写本地检查、指定CI/数据库环境和适用的真实用户验收
+    validations:
+      required: true
+  - type: textarea
+    id: next
+    attributes:
+      label: 下一步
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 建议优先级
+      options:
+        - P2
+        - P0
+        - P1
+        - P3
+    validations:
+      required: true

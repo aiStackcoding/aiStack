@@ -1,0 +1,63 @@
+name: Portfolio traceability
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize, ready_for_review]
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  traceability:
+    name: traceability
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify task and delivery references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          node --input-type=module <<'PORTFOLIO_NODE'
+          export function inspectPullRequest(pr, repository) {
+            const errors = [];
+            const branch = pr.head?.ref || '';
+            const match = /^codex\/(?:fxx-(\d+)-)?gh-(\d+)-[a-z0-9][a-z0-9-]*$/.exec(branch);
+            if (!match) errors.push('Use codex/fxx-N-gh-N-description (or codex/gh-N-description while the Linear number is pending).');
+            const body = String(pr.body || '').replace(/<!--[\s\S]*?-->/g, '');
+            const escaped = repository.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const refs = [...body.matchAll(new RegExp(`\\bRefs\\s+${escaped}#(\\d+)\\b`, 'gi'))];
+            const issueNumber = match ? Number(match[2]) : 0;
+            if (!refs.some(x => Number(x[1]) === issueNumber)) errors.push('Refs must identify the branch ticket in this repository.');
+            const linear = /https:\/\/linear\.app\/fxxkrlab\/issue\/FXX-(\d+)(?:\/[^\s)>]*)?/i.exec(body);
+            if (!linear) errors.push('Include the actual FXX Linear issue URL.');
+            if (match?.[1] && linear && Number(match[1]) !== Number(linear[1])) errors.push('The branch Linear number and Linear link differ.');
+            if (!body.includes('https://github.com/users/fxxkrlab/projects/6')) errors.push('Include the portfolio board URL; membership is verified separately.');
+            if (!body.includes(`Branch: ${branch}`)) errors.push('Record the actual Branch: value.');
+            if (!pr.head?.sha || !body.includes(`Commit: ${pr.head.sha}`)) errors.push('Record the current 40-character head SHA in Commit:.');
+            for (const heading of ['目标与范围', '验收条件', '验证证据', '风险与回滚', '剩余交付步骤']) {
+              const section = new RegExp(`^## ${heading}\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, 'm').exec(body);
+              const value = section?.[1]?.trim() || '';
+              if (!value || /^(?:待填写|TBD|TODO|<[^>]+>)$/i.test(value)) errors.push(`Complete section: ${heading}.`);
+            }
+            return {errors, issueNumber};
+          }
+          
+          export async function verifyIssue(repository, number, request) {
+            const response = await request(`https://api.github.com/repos/${repository}/issues/${number}`);
+            if (!response.ok) throw new Error(`Unable to verify source Issue: HTTP ${response.status}.`);
+            const issue = await response.json();
+            if (issue.pull_request || issue.number !== number || issue.html_url?.toLowerCase() !== `https://github.com/${repository}/issues/${number}`.toLowerCase()) throw new Error('The source must be an actual Issue in this repository.');
+            if (issue.state !== 'open') throw new Error('Use an open delivery Issue; completed work requires a new task.');
+            return issue;
+          }
+          
+          import fs from 'node:fs';
+          const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const result = inspectPullRequest(event.pull_request, process.env.GITHUB_REPOSITORY);
+          if (result.errors.length) { console.error(result.errors.join('\n')); process.exit(1); }
+          await verifyIssue(process.env.GITHUB_REPOSITORY, result.issueNumber, url => fetch(url, {
+            headers: {accept:'application/vnd.github+json',authorization:`Bearer ${process.env.GH_TOKEN}`,'X-GitHub-Api-Version':'2022-11-28'},
+            redirect:'error',signal:AbortSignal.timeout(15000)
+          }));
+          console.log('PR metadata and source Issue verified. Linear membership, board membership and delivery evidence require separate readback/review.');
+          PORTFOLIO_NODE
