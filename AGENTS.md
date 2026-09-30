@@ -1,3 +1,4 @@
+<!-- managed:portfolio-workflow:start -->
 # Codex 默认项目交付流程
 
 ## 适用范围与授权
@@ -29,3 +30,4 @@
 首次实施新项目时完成相同的仓库核对、Issue、总看板、Linear、独立分支和 Draft PR 流程。优先复用既有仓库，尊重用户指定的 owner、可见性和名称；没有远端时先确认仓库归属与可见性，不将私有内容公开。
 通过专门的初始化 Issue 和独立 PR 添加任务/缺陷模板、PR 模板、仓库流程说明及必要的追踪检查；保留原有 AGENTS、模板和 CI。GitHub App 未获新组织/仓库权限时报告准确缺口，不擅自扩大代码访问。
 本仓库接入数据位于 `.github/portfolio.json`，完整说明见 `docs/development/portfolio-workflow.md`。平台分支保护能力须现场核验；当前私有仓库套餐限制不能通过改公开或虚报保护生效来绕过。
+<!-- managed:portfolio-workflow:end -->
